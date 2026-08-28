@@ -7,7 +7,7 @@ pii = math.pi
 # print("ympyrän pinta-ala on: " + str (pintaala))
 
 
-# print(Tämä ohjelma antaa sinulle suorakulmiosta pinta-alan sekä piirin)
+# print("Tämä ohjelma antaa sinulle suorakulmiosta pinta-alan sekä piirin")
 # suorakulmionsivu1 = (input("anna suorakulmion leveys: "))
 # suorakulmionsivu2 = (input("anna suorakulmion pituus: "))
 # suorakulmionpintaala = float(suorakulmionsivu1) * float(suorakulmionsivu2)
@@ -63,11 +63,4 @@ pii = math.pi
 
 # summa = noppa1 + noppa2
 # print("Noppien summa on: " + str(summa))
-
-
-
-
-
-
-
 
