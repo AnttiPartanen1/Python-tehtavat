@@ -1,7 +1,7 @@
 
 # pelissä on reilusti time.sleep komentoa siksi importtasin ajan
 # importtasin ossän ikä tarkistus vitsin sekä tilasto funktion takia.
-#importtasin randomin kaatumisfunktion takia
+# importtasin randomin kaatumisfunktion takia
 import time
 import os
 import random
@@ -16,19 +16,23 @@ def kirjaatulos(tulos):
 
 
 # Tilasto funktio oli koko pelin koodauksen haastavin osuus mielestäni.
-# En täydellisesti ymmärrä itsekkään täsmälleen miten se toimii mutta nyt se kirjaa häviöt, voitot sekä luovutukset ylös.
+# Se kirjaa häviöt, voitot sekä luovutukset ylös.
 # Funktio luo "tulokset" tekstitiedoston ja kirjaa sinne voitot, häviöt sekä luovutukset.
+
 def naytatilasto():
-    if not os.path.exists("tulokset.txt"):
-        print("Et ole vielä pelannut yhtään peliä.")
-        return
     with open("tulokset.txt", "r") as tiedosto:
         rivit = tiedosto.readlines()
     voitot = rivit.count("voitto\n")
     haviot = rivit.count("häviö\n")
     luovtukset = rivit.count("luovutukset\n")
-    print("voitot: " + str(voitot) + ", häviöt: " + str(haviot))
+    print("voitot: " + str(voitot) + ", häviöt: " + str(haviot) + ", luovutukset: " + str(luovtukset))
 
+class elain:
+    def __init__ (self, enimi, oikearuoka):
+        self.enimi = enimi
+        self.oikearuoka = oikearuoka
+
+elaimet = (elain("koira", "luu"), elain("kissa", "sardiinipurkki"), elain("hiiri", "juusto"))
 
 if ika < 12:
     print("Olet liian nuori pelaamaan näin hurjaa peliä")
@@ -44,6 +48,7 @@ else:
 #importtasin ajan koska pelin tekstit tulee näin dynaamisemmin pienellä aika viiveellä 
 # Pelin ideana toimii että olet pelaajana kotona ja näät lemmikkejä kinastelevan keskenään. Pelin tarkoitus on löytää jokaiselle-
 # syömistä että eläimet ei syö toisiaan.
+
 def peli():
     print("Hurja peli alkaa...")
     time.sleep(2)
@@ -60,9 +65,11 @@ def peli():
     koti(tavarat)
 
 # Pelaajalla on mahdollisuus kaatua siirtyessä huoneesta huoneeseen. 
+# Kaatuminen on toteutettu randomilla. Kaatuminen aiheuttaa pelin häviämisen.
+# Koodasin tämän koska koen että hauska twisti peliin välillä häviölle ei voi mitään.
 
 def kaatuminen():
-    if random.randint(1, 100) <= 10:
+    if random.randint(1, 100) <= 1:
         print("Juostessasi varpaasi jää maton alle ja kaadun yltäpäätä naamallesi lattiaan.")
         time.sleep(4)
         print("Silmissäsi sumenee ja vaivut tajuttomaksi...")
@@ -72,8 +79,10 @@ def kaatuminen():
         kirjaatulos("häviö")
         exit()
     
+#"tavarat" on lista johon melkeinpä koko peli perustuu. Tavaraoihin voi lisää tavaroita löytämällä niitä huoneista. Funktioon myös sisällytetty
+#inventaarion tarkastus komento, se tarkistaa inventaarion sisällön ja tulostaa mitä siellä on. Tyhjällä inventaariolla-
+#ilmoittaa sen olevan tyhjä.
 
-#inventaarion tarkastus funktio
 def nayta_tavarat(tavarat):
     if len(tavarat) == 0:
         print("Et kanna mitään mukanasi")
@@ -82,7 +91,13 @@ def nayta_tavarat(tavarat):
         for tavara in tavarat:
             print("- " + tavara)
 
+# Funktio on rakennettu siten että aluksi print + time.sleep antaa kuvan että pelaaja juoksee huoneeseen.
+# jokaiseen huoneeseen juostessa myös lisätty mahdollisuus kaatua.
+# Pelaajalle tarjotaan mahdollisuutta ottaa löytyvät tavarat mukaan. Jos pelaaja palaa huoneeseen sen jälkeen kun-
+# on ottanut kaiken mahdollisen jo mukaan aikaisemmin ilmoittaa funktio että huoneessa ei ole enää mitään mukaan otettavaa.
+# On mahdollista myös palata huoneeseen ja ottaa mukaan esine jota ei ensimmäisellä kertaa ottanut mukaan.
 # En kommentoi sen enempää talon huoneita pääpiireittäin ne ovat melko saman tapaiset.
+
 def keittio(tavarat):
     print("Juokset keittiöön")
     time.sleep(1)
@@ -96,7 +111,8 @@ def keittio(tavarat):
     time.sleep(0.5)
     print("kipi kipi")
     print("Olet nyt keittiössä.")
-    if "juusto" not in tavarat:            #Alempana on ensimmäinen tavaran hankinta valinta jossa pelaaja voi valita ottaako mukaansa tarjotun esineen.
+    #Alempana on ensimmäinen tavaran hankinta valinta jossa pelaaja voi valita ottaako mukaansa tarjotun esineen.
+    if "juusto" not in tavarat:            
         print ("näät pöydällä reikäisen juuston! otetaanko se mukaan?")
         juustovalinta = input("Nappaatko juuston mukaan vai jätätkö sen pöydälle istumaan? 1. kyllä 2. Ei")
         if juustovalinta == "1":
@@ -110,7 +126,9 @@ def keittio(tavarat):
         veitsivalinta = input("nappaatko veitsen mukaan vai jätätkö sen pöydälle? 1. Kyllä 2. Ei")
         if veitsivalinta == "1":
             tavarat.append("veitsi")
-            print("jätit veitsen pöydälle...")
+            print("Nappasit veitsen mukaan!")
+        if veitsivalinta == "2":
+            print("Jätit veitsen pöydälle...")
     else:
         print("Keittiössä ei ole enää mitään muuta kuin resonoivaa ääntä pitävä jääkaappi...")
         time.sleep(6)
@@ -146,12 +164,12 @@ def olohuone(tavarat):
         if luuvalinta == "1":
             tavarat.append("luu")
             print("Nappasit suuren luun mukaasi.")
-        if radiovalinta == "2":
+        if luuvalinta == "2":
                     print("jätit vesan rauhaan ja peittelit luut matolla...")
     else:
         print("Olohuoneessa ei enää ole muuta kuin tikittävä kaappikello ja edes takas ryntäilevät eläimet...")
 
-
+#ullakko on käytännössä olemassa sen takia että kaatuminen olisi todennäköisempää uteliaalle pelaajalle.
 def ullakko(tavarat):
     print("Juokset ullakon luukulle")
     time.sleep(1)
@@ -209,58 +227,105 @@ def makuuhuone(tavarat):
             sardiinivalinta = input("Jätätkö yöpalan rauhaan vai nappaatko sen mukaan? 1. Kyllä 2. Ei")
             if sardiinivalinta == "1":
                 tavarat.append("sardiinipurkki")
-                print("Jätit sardiinit haisemaan yöpödän laatikkoon...")
+                print("Nappasit sardiinit mukaan!")
+            if sardiinivalinta == "2":
+                print("jätit sardiinit haisemaan yöpöydän laatikkoon...")
     else:
-        print("Keittiössä ei ole enää mitään muuta kuin resonoivaa ääntä pitävä jääkaappi...")
+        print("Makkarissa on enää vain ympäri säntäilevät lemmikit...")
 
 
 # Pelin "loppu" eli kohta missä voit syöttää eläimille hankitut tavarat
 
 
 def ruokinta(tavarat):
-    puuttuu = []
-    if "sardiinipurkki" not in tavarat:
-        puuttuu.append("kissalle") 
-    if "luu" not in tavarat:
-        puuttuu.append("koiralle")
-    if "juusto" not in tavarat:
-        puuttuu.append("hiirelle")
-
-    if puuttuu:
-        print("Sinulla ei ole vielä kaikille rakkaille eläimillesi ruokaa..." + ", ".join(puuttuu))
+    if len(tavarat) <3:
+        print("Sinulla ei ole ruokaa kaikille annettavaksi...")
         return False
-    
-#"Join" yhdistää listan sanat yhdeksi tekstiksi.
 
-    print("Annat koiralle luun palan ja hän lopettaa kissan jahtaamisen...")
-    time.sleep(6)
-    print("Juokset seuraavaksi kissan kiinni ja annat yöpala sardiinisi hänelle evääksi...")
-    time.sleep(6)
-    print("viimeisenä hiiri katselee sinua hengästyneenä. Päätät antaa hänelle juustonpalan joka sinulta löytyy vielä")
-    time.sleep(6)
-    print("Nyt kaikki eläimet mutustavat onnellisena omia eväitään... pystyt vihdoin hengähtämään itsekkin...")
-    time.sleep(6)
-    print("***************************************************************************")
-    print("                                                                           ")
-    print("                                                                           ")
-    print("                                                                           ")
-    print("                                                                           ")
-    print("                                                                           ")
-    print("                               VOITIT PELIN!                               ")
-    print("                                                                           ")
-    print("                                                                           ")
-    print("                                                                           ")
-    print("                                                                           ")
-    print("                                                                           ")
-    print("                                                                           ")
-    print("***************************************************************************")
-    time.sleep(10)
-    kirjaatulos("voitto")
-    return True
+    for elain in elaimet:
+        print("Mitä annat eläimelle: " + elain.enimi + "?")
+        for i in range(len(tavarat)):
+            print(str(i + 1) + ". " + tavarat[i])
+
+        valinta = int(input("valitse numero: "))
+        ruoka = tavarat[valinta - 1]
+
+        if ruoka != elain.oikearuoka:
+            print("Mikä pyskopaatti oikein olet??? Miksi koitat syöttää tuota lemmikillesi?!?!?")
+            time.sleep(5)
+            print("Pelisi päättyy tähän...")
+            kirjaatulos("häviö")
+            return True
+        else:
+            print(elain.enimi + " mutustaa tyytyväisenä evästään!")
+    else:
+        print("Nyt kaikki eläimet mutustavat onnellisena omia eväitään... pystyt vihdoin hengähtämään itsekkin...")
+        time.sleep(6)
+        print("***************************************************************************")
+        print("                                                                           ")
+        print("                                                                           ")
+        print("                                                                           ")
+        print("                                                                           ")
+        print("                                                                           ")
+        print("                               VOITIT PELIN!                               ")
+        print("                                                                           ")
+        print("                                                                           ")
+        print("                                                                           ")
+        print("                                                                           ")
+        print("                                                                           ")
+        print("                                                                           ")
+        print("***************************************************************************")
+        time.sleep(10)
+        kirjaatulos("voitto")
+        return True
+
+
+
+# def ruokinta(tavarat):
+#     puuttuu = []
+#     if "sardiinipurkki" not in tavarat:
+#         puuttuu.append("kissalle") 
+#     if "luu" not in tavarat:
+#         puuttuu.append("koiralle")
+#     if "juusto" not in tavarat:
+#         puuttuu.append("hiirelle")
+
+#     if puuttuu:
+#         print("Sinulla ei ole vielä kaikille rakkaille eläimillesi ruokaa..." + ", ".join(puuttuu))
+#         return False
+# # Funktio tarkistaa aluksi onko inventaariossasi tarvittavat ruuat eläimille ja ilmoittaa jos jotain puuttuu.  
+# # "Join" yhdistää listan sanat yhdeksi tekstiksi.
+
+#     print("Annat koiralle luun palan ja hän lopettaa kissan jahtaamisen...")
+#     time.sleep(6)
+#     print("Juokset seuraavaksi kissan kiinni ja annat yöpala sardiinisi hänelle evääksi...")
+#     time.sleep(6)
+#     print("viimeisenä hiiri katselee sinua hengästyneenä. Päätät antaa hänelle juustonpalan joka sinulta löytyy vielä")
+#     time.sleep(6)
+#     print("Nyt kaikki eläimet mutustavat onnellisena omia eväitään... pystyt vihdoin hengähtämään itsekkin...")
+#     time.sleep(6)
+#     print("***************************************************************************")
+#     print("                                                                           ")
+#     print("                                                                           ")
+#     print("                                                                           ")
+#     print("                                                                           ")
+#     print("                                                                           ")
+#     print("                               VOITIT PELIN!                               ")
+#     print("                                                                           ")
+#     print("                                                                           ")
+#     print("                                                                           ")
+#     print("                                                                           ")
+#     print("                                                                           ")
+#     print("                                                                           ")
+#     print("***************************************************************************")
+#     time.sleep(10)
+#     kirjaatulos("voitto")
+#     return True
 
 # Voiton lopussa tulos järjestelmä kirjaa voiton ylös.
     
     
+# Pelin sisäinen päävalikko. Pelaaja voi kirjoittamalla numeron valita huoneen tai muita vaihtoehtoja.
 
     
 def koti(tavarat):
@@ -278,7 +343,7 @@ def koti(tavarat):
         print("                7.Luovuta                      ")
         print("...............................................")
 
-        #peliä voisi käytännössä jatkaa mielettömiin määriin lisäämällä huoneita
+        #peliä voisi käytännössä jatkaa mielettömiin määriin lisäämällä huoneita.
 
         valinta = input ("valitse minne mennä (numero)")
 
@@ -294,18 +359,19 @@ def koti(tavarat):
             nayta_tavarat(tavarat)
             time.sleep(7)
         elif valinta == "6":
-            ruokinta(tavarat)
-            break
+            if ruokinta(tavarat):
+                break
         elif valinta == "7":
             print("Ymmärrän, hurja peli kävi liian hurjaksi...")
             kirjaatulos("luovutus")
             break
         #Tein myös luovuttamisen mahdolliseksi.
         else:
-            print("kirjoita numero, pelkkä numero (1-6)")
+            print("kirjoita numero, pelkkä numero (1-7)")
 
 
-
+# pelin aloittava päävalikko. 
+# Käytännössä sama kuin pelin sisäinen päävalikko muttei funktiossa.
 while True:
     print("..........................................")
     print("               PÄÄVALIKKO                 ")
